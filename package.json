@@ -1,0 +1,20 @@
+{
+  "name": "Letreiro",
+  "version": "1.0.0",
+  "description": "Letreiro para que seja possível deixar recados para os turnos.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "author": "Marcos Santana",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^31.0.2",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.newpop.letreiro",
+    "productName": "Letreiro para a logistica"
+  }
+}

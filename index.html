@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letreiro Digital</title>
+    <!-- Inclui Tailwind CSS para estilização fácil e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Link para o arquivo CSS externo -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Contêiner do Letreiro que ocupa a tela inteira -->
+    <div id="marquee-wrapper" class="marquee-wrapper">
+        <!-- Div para exibir o horário e a data -->
+        <div id="datetime-display" class="datetime-display">
+            <span id="current-time"></span><br>
+            <span id="current-date"></span>
+        </div>
+        <span id="marquee-text" class="marquee-text">Sua mensagem aparecerá aqui!</span>
+    </div>
+
+    <script>
+        // Importa ipcRenderer para comunicação entre processos
+        const { ipcRenderer } = require('electron');
+
+        window.onload = function() {
+            const marqueeText = document.getElementById('marquee-text');
+            const marqueeWrapper = document.getElementById('marquee-wrapper');
+            const currentTimeSpan = document.getElementById('current-time');
+            const currentDateSpan = document.getElementById('current-date');
+
+            // Função para definir a mensagem e reiniciar a animação
+            function setMessage(newMessage) {
+                if (newMessage) {
+                    marqueeText.textContent = newMessage;
+
+                    // Reinicia a animação para que ela comece do zero com a nova mensagem
+                    marqueeText.style.animation = 'none';
+                    marqueeText.offsetHeight; /* Força um reflow para reiniciar a animação */
+                    marqueeText.style.animation = null;
+                    adjustAnimationSpeed(); // Ajusta a velocidade após definir a mensagem
+                } else {
+                    marqueeText.textContent = "Nenhuma mensagem definida. Use o menu 'Editar' para definir uma.";
+                    marqueeText.style.animation = 'none';
+                    marqueeText.offsetHeight;
+                    marqueeText.style.animation = null;
+                }
+            }
+
+            // Define uma mensagem inicial quando a página carrega
+            setMessage("Bem-vindo ao seu Letreiro Digital! Use o menu 'Editar' para definir uma mensagem.");
+
+            // Ajusta a velocidade da animação com base no comprimento da mensagem
+            function adjustAnimationSpeed() {
+                const textWidth = marqueeText.scrollWidth; // Largura real do texto
+                const wrapperWidth = marqueeWrapper.offsetWidth; // Largura do contêiner visível
+
+                // Calcula a duração da animação com base na largura do texto e do wrapper
+                // Uma duração menor significa mais rápido. Multiplicamos por um fator para controlar a velocidade base.
+                // Evita divisão por zero se o wrapperWidth for 0
+                const duration = wrapperWidth > 0 ? (textWidth / wrapperWidth) * 10 : 20; // Duração mínima de 10 segundos
+                marqueeText.style.animationDuration = `${Math.max(duration, 10)}s`; // Garante uma duração mínima
+            }
+
+            // Função para atualizar o horário e a data
+            function updateDateTime() {
+                const now = new Date();
+                const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+                currentTimeSpan.textContent = now.toLocaleTimeString('pt-BR', timeOptions);
+                currentDateSpan.textContent = now.toLocaleDateString('pt-BR', dateOptions);
+            }
+
+            // Chama a função de atualização de data e hora a cada segundo
+            setInterval(updateDateTime, 1000);
+            updateDateTime(); // Chama uma vez para exibir imediatamente
+
+            // Chama a função de ajuste de velocidade ao carregar e redimensionar a janela
+            window.addEventListener('resize', adjustAnimationSpeed);
+            adjustAnimationSpeed(); // Chama no carregamento inicial
+
+            // Escuta por mensagens do processo principal (main.js)
+            ipcRenderer.on('update-marquee-message', (event, message) => {
+                console.log('Mensagem recebida do processo principal:', message); // Linha de depuração
+                setMessage(message);
+            });
+        };
+    </script>
+</body>
+</html>

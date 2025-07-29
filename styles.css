@@ -1,0 +1,113 @@
+/* Define a fonte Inter para todo o corpo */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #ffffff; /* Cor de fundo branca, combinando com o marquee-wrapper */
+    color: #ecf0f1; /* Cor do texto padrão do body (não visível, mas mantido) */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ocupa a altura total da viewport */
+    margin: 0;
+    overflow: hidden; /* Garante que o conteúdo que sai da tela não cause barras de rolagem */
+}
+
+/* Estilo para o contêiner do letreiro */
+.marquee-wrapper {
+    width: 100vw; /* Ocupa a largura total da viewport */
+    height: 100vh; /* Ocupa a altura total da viewport */
+    background-color: #ffffff; /* Cor de fundo branca */
+    border-radius: 0; /* Remove cantos arredondados para ocupar a tela inteira */
+    overflow: hidden; /* Esconde o texto fora da área visível */
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-shadow: none; /* Remove a sombra para ocupar a tela inteira */
+}
+
+/* Estilo para a div de data e hora */
+.datetime-display {
+    position: absolute;
+    top: 20px; /* Distância do topo */
+    left: 20px; /* Distância da esquerda */
+    color: #34495e; /* Cor do texto (azul acinzentado) */
+    font-size: 1.5rem; /* Tamanho base para a data */
+    font-weight: bold;
+    text-align: left;
+    z-index: 10; /* Garante que fique acima do letreiro */
+    background-color: #ffffff; /* Mesma cor de fundo do marquee-wrapper */
+    padding: 10px 15px;
+    border-radius: 0.5rem;
+    text-transform: uppercase; /* Converte o texto para maiúsculas */
+}
+
+.datetime-display span {
+    display: block; /* Garante que a data e a hora fiquem em linhas separadas */
+}
+
+/* Estilo específico para a hora (maior) */
+#current-time {
+    font-size: 5rem; /* Tamanho da fonte dobrado para a hora (2.5rem * 2 = 5rem) */
+}
+
+
+/* Estilo para o texto do letreiro */
+.marquee-text {
+    position: absolute;
+    white-space: nowrap; /* Impede que o texto quebre linha */
+    font-size: 16rem; /* Tamanho da fonte dobrado para o letreiro (8rem * 2 = 16rem) */
+    font-weight: bold;
+    color: #2c3e50; /* Cor do texto do letreiro (azul escuro) */
+    padding-left: 100%; /* Começa o texto fora da tela à direita */
+    animation: marquee 30s linear infinite; /* Aplica a animação, duração ajustada */
+}
+
+/* Define a animação do letreiro */
+@keyframes marquee {
+    0% { transform: translateX(0%); } /* Início da animação (fora da tela à direita) */
+    100% { transform: translateX(-100%); } /* Fim da animação (fora da tela à esquerda) */
+}
+
+/* Ajustes de tamanho de fonte para telas menores */
+@media (max-width: 1024px) {
+    .marquee-text {
+        font-size: 12rem; /* Dobrado de 6rem */
+    }
+    .datetime-display {
+        font-size: 1.2rem;
+        top: 15px;
+        left: 15px;
+    }
+    #current-time {
+        font-size: 4rem; /* Dobrado de 2rem */
+    }
+}
+
+@media (max-width: 768px) {
+    .marquee-text {
+        font-size: 8rem; /* Dobrado de 4rem */
+    }
+    .datetime-display {
+        font-size: 1rem;
+        top: 10px;
+        left: 10px;
+        padding: 8px 12px;
+    }
+    #current-time {
+        font-size: 3.6rem; /* Dobrado de 1.8rem */
+    }
+}
+
+@media (max-width: 480px) {
+    .marquee-text {
+        font-size: 5rem; /* Dobrado de 2.5rem */
+    }
+    .datetime-display {
+        font-size: 0.8rem;
+        top: 5px;
+        left: 5px;
+        padding: 5px 8px;
+    }
+    #current-time {
+        font-size: 3rem; /* Dobrado de 1.5rem */
+    }
+}
